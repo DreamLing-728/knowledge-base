@@ -199,3 +199,6 @@ export default {
 }
 </script>
 ```
+
+### 3. 脚手架构建Vue项目
+https://www.cnblogs.com/chenwolong/p/vuecli.html
