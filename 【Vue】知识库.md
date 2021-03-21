@@ -200,5 +200,83 @@ export default {
 </script>
 ```
 
+**2.4 eventBus**
+**使用场景**: 兄弟组件之间传值
+**使用方法**：一个组件通过$emit发布事件，另一个组件通过$on监听自定义事件
+**案例**
+步骤1：创建一个中央总线utils/eventBus.js
+```
+import Vue from 'vue'
+export const EventBus = new Vue()
+```
+步骤2：一个组件引入中央总线eventBus.js，同时通过$emit发布事件
+```
+import { EventBus } from '@/utils/eventBus.js'
+export default {
+  name: '',
+  methods: {
+    eventbusFunctiong () {
+      EventBus('menuClick', index)
+    }
+  }
+}
+```
+步骤3：另一个组件引入中央总线eventBus.js, 同时通过$on监听事件
+```
+import { EventBus } from '@/utils/eventBus.js'
+export default {
+  name: '',
+  mounted: {
+    EventBus.$on('menuClick', this.handle)
+  }
+}
+```
+
 ### 3. 脚手架构建Vue项目
 https://www.cnblogs.com/chenwolong/p/vuecli.html
+
+### 4. Vue中mixins的用法
+1. 定义一个混入对象
+```
+// mixins.js
+export const MyMixins = {
+
+}
+```
+2. 把混入对象引入到当前组件中
+```
+<template>
+</template>
+
+<script>
+import { MyMixins } from '@xx/mixins.js'
+export default {
+  mixins: [MyMixins],
+}
+</script>
+```
+参考文章：https://www.jianshu.com/p/bcff647d24ec
+项目路径：layout/components/menu-side/index.js
+
+### 5. Vue 中 createElement 使用
+**用途**：顾名思义增加一个元素，createElement返回的值是一个虚拟节点。
+
+**使用介绍**：createElement 默认暴露给用户传递3个参数
+第一个参数是需要渲染的组件，可以是组件的标签，比如div；或者是一个组件对象，也就是你天天写的export default {}；亦或者可以是一个异步函数。
+第二个参数是这个组件的属性，是一个对象，如果组件没有参数，可以传null（关于组件的属性，下文将依次介绍）
+第三个参数是这个组件的子组件，可以是一个字符串(textContent)或者一个由VNodes组成的数组
+
+**案例**：
+用createElement写一个如下的输入框
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/182bb7edf67b4763a21d09b5b25dc584~tplv-k3u1fbpfcp-watermark.image)
+代码就长这样
+```
+export default {
+  render(createElement) {
+    createElement('div', { attrs: { class: 'input-wrap'}}, [
+      createElement('span', { attrs: { class: 'lable'}}),
+      createElement('input', { attrs: { class: 'input}})
+    ])
+  }
+}
+```
