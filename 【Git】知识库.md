@@ -31,3 +31,25 @@ git push origin dev
 
 6. 最后在本地的dev分支执行以下命令发布到测试服务器
 npm run deploy:preprod
+
+## 常用操作
+### 1.远程仓库
+``` 
+查看远程仓库：git remote
+删除远程仓库：git remote rm origin
+添加远程仓库：git remote add origin https://github.com/DreamLing-728/knowledge-base.git
+```
+### 2.分支操作
+```
+切换远程分支：git checkout -b dev origin/dev
+```
+
+### 3.回退到上一个commit
+```
+git reset –hard 8ff24a6803173208f3e606e32dfcf82db9ac84d8
+```
+
+### 4.gitlab 每次都要输入账号密码
+```
+https://blog.csdn.net/guzhao593/article/details/84747613
+```

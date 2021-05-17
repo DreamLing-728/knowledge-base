@@ -232,6 +232,9 @@ export default {
 }
 ```
 
+这篇文章写得很好
+https://blog.csdn.net/xr510002594/article/details/83304141
+
 ### 3. 脚手架构建Vue项目
 https://www.cnblogs.com/chenwolong/p/vuecli.html
 

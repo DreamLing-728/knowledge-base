@@ -815,3 +815,18 @@ link、visite、hover、active、hover
 after、before
 ```
 
+### 40. margin: 0 auto有效的条件？
+```
+1. 需要居中的元素要设置宽度
+2. 父元素不能是绝对定位或者浮动
+3. 有时需要给父级元素添加text-align: center;
+4. 在HTML中使用<center></center>标签，需考虑好整体构架，否者全部元素都会居中的。
+5. 有时可能涉及到 <!DOCTYPE>类型相关定义。
+```
+
+### 41. z-index无效是什么导致的？
+```
+1. 父元素的position属性不能是relative
+2. 当前标签需要设置position（不能是static）
+3. 当前标签不能有float属性
+```
