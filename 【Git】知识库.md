@@ -53,3 +53,11 @@ git reset –hard 8ff24a6803173208f3e606e32dfcf82db9ac84d8
 ```
 https://blog.csdn.net/guzhao593/article/details/84747613
 ```
+
+## 常见报错
+1. OpenSSL SSL_read: Connection was reset, errno 10054 错误解决
+先运行下面这行
+```
+git config --global http.sslVerify "false"
+```
+再重新执行git命令即可解决
