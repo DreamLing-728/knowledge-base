@@ -47,8 +47,51 @@
 //   [Index: number]: number
 // }
 // let array1: INumberArray = [0, 1, 2, 3]
-function web(name, age) {
-    var args = arguments;
-    console.log(args);
+// function web(name: string, age: number) {
+//   let args: IArguments = arguments;
+//   console.log(args);  // { '0': 'web', '1': 1 }
+// }
+// web('web', 1)
+// function cml(x: number, y: number): number {
+//   return x + y
+// }
+// let cml = function(x: number, y: number): number {
+//   return x + y
+// }
+// let cml: (x: number, y: number) => number = function(x: number, y: number): number {
+//   return x + y
+// }
+// interface ICml {
+//   (x: number, y: number): number
+// }
+// let cml: ICml = function(x: number, y: number) : number {
+//   return x + y
+// }
+// console.log(cml(1, 2))
+// function cml(x: number, y?: number): number {
+//   y = y || 0
+//   return x + y
+// }
+// console.log(cml(1, 2))  // 3
+// console.log(cml(1))  // 1
+// function cml(arguments) {
+//   let sum = 0
+//   for(let item of arguments) {
+//     sum = sum + item
+//   }
+//   return sum
+// }
+// console.log(cml(1, 2, 3)) // 6
+function cml() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    var sum = 0;
+    for (var i = 0; i < args.length; i++) {
+        sum = sum + args[i];
+    }
+    return sum;
 }
-web('web', 1);
+console.log(cml(1, 2, 3)); // 6
+console.log(cml(1, '2', 3)); // 6
