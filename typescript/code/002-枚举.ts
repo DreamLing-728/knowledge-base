@@ -104,12 +104,17 @@
 // }
 // console.log(cml(1, 2, 3)) // 6
 
-function cml(...args: number[]) {
-  let sum: number = 0
-  for(let i: number = 0; i < args.length; i ++) {
-    sum = sum + args[i]
-  }
-  return sum
+// function cml(...args: number[]) {
+//   let sum: number = 0
+//   for(let i: number = 0; i < args.length; i ++) {
+//     sum = sum + args[i]
+//   }
+//   return sum
+// }
+// console.log(cml(1, 2, 3)) // 6
+// console.log(cml(1, '2', 3)) // 6
+
+function cml(a: number | string): void {
+  console.log(a.length) // 报错
+  console.log((<string>a).length) // OK
 }
-console.log(cml(1, 2, 3)) // 6
-console.log(cml(1, '2', 3)) // 6

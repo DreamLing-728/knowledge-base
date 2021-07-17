@@ -82,16 +82,16 @@
 //   return sum
 // }
 // console.log(cml(1, 2, 3)) // 6
-function cml() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    var sum = 0;
-    for (var i = 0; i < args.length; i++) {
-        sum = sum + args[i];
-    }
-    return sum;
+// function cml(...args: number[]) {
+//   let sum: number = 0
+//   for(let i: number = 0; i < args.length; i ++) {
+//     sum = sum + args[i]
+//   }
+//   return sum
+// }
+// console.log(cml(1, 2, 3)) // 6
+// console.log(cml(1, '2', 3)) // 6
+function cml(a) {
+    console.log(a.length);
 }
-console.log(cml(1, 2, 3)); // 6
-console.log(cml(1, '2', 3)); // 6
+cml('123');
