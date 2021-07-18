@@ -114,7 +114,43 @@
 // console.log(cml(1, 2, 3)) // 6
 // console.log(cml(1, '2', 3)) // 6
 
-function cml(a: number | string): void {
-  console.log(a.length) // 报错
-  console.log((<string>a).length) // OK
-}
+// function cml(a: number | string): void {
+//   console.log(a.length) // 报错
+//   console.log((<string>a).length) // OK
+// }
+
+// type Cml = '666' | '888'
+// function cmlFun(a: Cml): void {
+//   console.log(a)
+// }
+// cmlFun('666') // OK
+// // cmlFun(666) // 报错
+
+// let p: [string, number] = ['666', 666]
+// console.log(p) // 
+
+// let cml: [string, number] = ['666', 666]
+// cml[0] = '888'
+// console.log(cml) // ['888', 666]
+// cml[1] = 888
+// console.log(cml) // ['888', 888]
+// cml = ['888', 888]
+// console.log(cml) // ['888', 888]
+// // cml = ['888', 888, '888'] // 报错
+// cml.push('777')
+
+// let cml: [string, number] = ['666', 666]
+// cml.push('888')
+// console.log(cml) // ['666', 666, '888']
+
+// enum Gender {Male, Female};
+
+// console.log(Gender);
+
+enum Gender {Male, Female}
+console.log(Gender) // {'0': 'Male', '1': 'Female', 'Male': 0, 'Female', 1}
+console.log(Gender['0']) // Male
+console.log(Gender['1']) // FeMale
+console.log(Gender['Male']) // 0
+console.log(Gender['Female']) // 1
+
