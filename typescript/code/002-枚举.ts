@@ -147,10 +147,52 @@
 
 // console.log(Gender);
 
-enum Gender {Male, Female}
-console.log(Gender) // {'0': 'Male', '1': 'Female', 'Male': 0, 'Female', 1}
-console.log(Gender['0']) // Male
-console.log(Gender['1']) // FeMale
-console.log(Gender['Male']) // 0
-console.log(Gender['Female']) // 1
+// enum Gender {Male, Female}
+// console.log(Gender) // {'0': 'Male', '1': 'Female', 'Male': 0, 'Female', 1}
+// console.log(Gender[0]) // Male
+// console.log(Gender['1']) // FeMale
+// console.log(Gender['Male']) // 0
+// console.log(Gender['Female']) // 1
+
+// enum Direction1 {
+//   NORTH = 1.5,
+//   SOUTH, // 2.5
+//   EAST, // 3.5
+//   WEST, // 4.5
+// }
+// console.log(Direction1)
+
+// enum Direction1 {
+//   NORTH = 'a',
+//   SOUTH = 'b', 
+//   EAST = 'c', 
+//   WEST = 'd', 
+// }
+// console.log(Direction1)  // { NORTH: 'a', SOUTH: 'b', EAST: 'c', WEST: 'd' }
+// console.log(Direction1['NORTH']) // a
+// console.log(Direction1['a'])  // undefined
+
+// const enum Gender {Male, Female}
+// let cml: Gender = Gender['Female']
+// console.log(cml)  // 1
+
+
+// enum Cml {
+//   A,
+//   B,
+//   C = "c",
+//   D = "d",
+//   E = 8,
+//   F,
+// }
+
+// console.log(Cml[0]) // A
+// console.log(Cml['A']) // 0
+// console.log(Cml['C']) // c
+// console.log(Cml['c']) // undefined
+
+let cml: [string, number] = ['666', 666]
+cml.push('888')
+console.log(cml) // ['666', 666, '888']
+console.log(cml[2]) // 报错
 
