@@ -66,45 +66,78 @@
 
 // 抽象类：不可实例化，不能直接new出实例来
 //   当做基类来使用
-abstract class Base {
-    protected a: number;
-    private b: string;
-    public constructor(a: number, b: string){
-        this.a = a;
-        this.b = b;
-    }
-    public f(): void{
-        // protected属性可以访问
-        // private属性可以访问
-        console.log(this.a, this.b);
-    }
-    // 抽象方法
-    public abstract f3(): void;
-}
+// abstract class Base {
+//     protected a: number;
+//     private b: string;
+//     public constructor(a: number, b: string){
+//         this.a = a;
+//         this.b = b;
+//     }
+//     public f(): void{
+//         // protected属性可以访问
+//         // private属性可以访问
+//         console.log(this.a, this.b);
+//     }
+//     // 抽象方法
+//     public abstract f3(): void;
+// }
 
-// 抽象类不可以实例化
-// let b: Base = new Base(1, 'abc');
+// // 抽象类不可以实例化
+// // let b: Base = new Base(1, 'abc');
 
-class DerivedClass extends Base{
-    public c: number;
-    public constructor(c: number, ...args: any[]){
-        super(...<[number, string]>args);
-        this.c = c;
-    }
-    public f2(): void{
-        console.log(this.a);
-    }
+// class DerivedClass extends Base{
+//     public c: number;
+//     public constructor(c: number, ...args: any[]){
+//         super(...<[number, string]>args);
+//         this.c = c;
+//     }
+//     public f2(): void{
+//         console.log(this.a);
+//     }
 
-    public f3(): void {
-        console.log('hello');
-    }
-}
+//     public f3(): void {
+//         console.log('hello');
+//     }
+// }
 
-let b: Base = new DerivedClass(1, 2, 'cde');
-b.f3();
+// let b: Base = new DerivedClass(1, 2, 'cde');
+// b.f3();
 
 
+// 父类
+// abstract class Father {
+//     // 需要先定义
+//     public name: string
+//     public age: number
+//     public constructor (name, age) {
+//       this.name = name
+//       this.age = age
+//     }
+//     public abstract f1(): void
+//   }
+  
+//   class Son extends Father{
+//     public phone: string
+//     constructor(phone, ...args: [string, number]) {
+//       super(...args)
+//       this.phone = phone
+//     }
+//     public f2(): void {
+//       console.log('this.name', this.name)
+//     }
+     
+//     // public f1(): void {
+//     //   console.log('this.name', this.name)
+//     // }
+//   }
+  
+//   let fa: Father = new Son('17836762323', '父类', 36)
+//   fa.f1() // this.name 父类
 
+
+// let cml: {x: number, y: number} = {x: 1, y: 1}
+// cml.x = 2
+// console.log(cml)
 
 // 类，抽象类，接口 -》怎么用？
 

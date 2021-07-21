@@ -76,33 +76,53 @@
 // bi.f2(2);  // 2
 
 
-// 接口继承类
-class C1 {
-    a: number;
-    b: string;
-    f():void{
-        console.log('aaa');
-    }
-}
+// // 接口继承类
+// class C1 {
+//     a: number;
+//     b: string;
+//     f():void{
+//         console.log('aaa');
+//     }
+// }
 
-interface I1 extends C1 {
-    c: number;
-}
+// interface I1 extends C1 {
+//     c: number;
+// }
 
-class C2 implements I1{
-    a: number;
-    b: string;
-    c: number;
-    constructor(a: number, b: string, c: number){
-        this.a = a;
-        this.b = b;
-        this.c = c;
-    }
-    f():void{
-        console.log(this.a, this.b);
-    }
-}
+// class C2 implements I1{
+//     a: number;
+//     b: string;
+//     c: number;
+//     constructor(a: number, b: string, c: number){
+//         this.a = a;
+//         this.b = b;
+//         this.c = c;
+//     }
+//     f():void{
+//         console.log(this.a, this.b);
+//     }
+// }
 
-let c: C2 = new C2(1, 'abcv', 2);
-let i: I1 = c;
-i.f(); // 1 'abcv'
+// let c: C2 = new C2(1, 'abcv', 2);
+// let i: I1 = c;
+// i.f(); // 1 'abcv'
+
+
+// type cmlFun = f(x: number, y: number): number 
+// let cml: cmlFun = f(a, b)
+// console.log(cml(1, 2))  // 3
+
+// 
+// type cmlFun = (x: number, y: number) => number
+// let cml: cmlFun = (a, b) => a + b
+// console.log(cml(1, 2))  // 3
+// function cml(x: string, y: number) {
+//     let args = arguments;
+//     console.log(args);
+// }
+// cml('web', 1) // [Arguments] { '0': 'web', '1': 1 }
+
+const enum Gender {Male, Female}
+let cml: Gender = Gender['Female']
+cml = 2
+console.log(cml)  // 2
