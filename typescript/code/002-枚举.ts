@@ -200,9 +200,19 @@
 // let cml: cmlFun = (a, b) => a + b
 // console.log(cml(1, 2))
 
-let cml = function(x: number, y: number): number {
-  return x + y
-}
+// type cmlFun = function(x: number, y: number): number {
+//   return x + y
+// }
+// let cml: cmlFun = (a, b) => a + b
+// console.log(cml(1, 2))  // 3
+
+// type cmlFun = (x: number, y: number) => number
+// let cml: cmlFun = (a, b) => a + b
+// console.log(cml(1, 2))
+
+
+type cmlFun = function(x: number, y: number): void
+let cml: cmlFun = (a, b) => a + b
 console.log(cml(1, 2))  // 3
 
 
