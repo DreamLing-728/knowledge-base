@@ -65,24 +65,25 @@
 // let bi: IA2 = p;
 // bi.f2(2);  // 2
 // 接口继承类
-var A = /** @class */ (function () {
-    function A() {
+var C1 = /** @class */ (function () {
+    function C1() {
     }
-    A.prototype.f = function () {
+    C1.prototype.f = function () {
         console.log('aaa');
     };
-    return A;
+    return C1;
 }());
-var A2 = /** @class */ (function () {
-    function A2() {
+var C2 = /** @class */ (function () {
+    function C2(a, b, c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
     }
-    A2.prototype.f = function () {
-        console.log('aaa');
+    C2.prototype.f = function () {
+        console.log(this.a, this.b);
     };
-    return A2;
+    return C2;
 }());
-var p = new A(1, 'abcv', 2);
-var ai = p;
-ai.f(1); // 1 'abcv'
-var bi = p;
-bi.f2(2); // 2
+var c = new C2(1, 'abcv', 2);
+var i = c;
+i.f(); // 1 'abcv'

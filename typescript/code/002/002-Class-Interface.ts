@@ -77,7 +77,7 @@
 
 
 // 接口继承类
-class A {
+class C1 {
     a: number;
     b: string;
     f():void{
@@ -85,11 +85,11 @@ class A {
     }
 }
 
-interface IA extends A {
+interface I1 extends C1 {
     c: number;
 }
 
-class A2 implements IA{
+class C2 implements I1{
     a: number;
     b: string;
     c: number;
@@ -99,13 +99,10 @@ class A2 implements IA{
         this.c = c;
     }
     f():void{
-        console.log('aaa');
+        console.log(this.a, this.b);
     }
 }
 
-let p: A2 = new A2(1, 'abcv', 2);
-let ai: IA = p;
-ai.f(1); // 1 'abcv'
-
-let bi: IA2 = p;
-bi.f2(2);  // 2
+let c: C2 = new C2(1, 'abcv', 2);
+let i: I1 = c;
+i.f(); // 1 'abcv'
