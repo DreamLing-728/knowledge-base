@@ -191,8 +191,18 @@
 // console.log(Cml['C']) // c
 // console.log(Cml['c']) // undefined
 
-let cml: [string, number] = ['666', 666]
-cml.push('888')
-console.log(cml) // ['666', 666, '888']
-console.log(cml[2]) // 报错
+// let cml: [string, number] = ['666', 666]
+// cml.push('888')
+// console.log(cml) // ['666', 666, '888']
+// console.log(cml[2]) // 报错
+
+// type cmlFun = (x: number, y: number) => number
+// let cml: cmlFun = (a, b) => a + b
+// console.log(cml(1, 2))
+
+let cml = function(x: number, y: number): number {
+  return x + y
+}
+console.log(cml(1, 2))  // 3
+
 
