@@ -211,8 +211,21 @@
 // console.log(cml(1, 2))
 
 
-type cmlFun = function(x: number, y: number): void
-let cml: cmlFun = (a, b) => a + b
-console.log(cml(1, 2))  // 3
+// type cmlFun = function(x: number, y: number): void
+// let cml: cmlFun = (a, b) => a + b
+// console.log(cml(1, 2))  // 3
 
+// let error: never = (() => {
+//   throw new Error('error')
+// })
+
+
+// let endLess: never = (() => {
+//   while(true) {}
+// })()
+
+function cml(a: number | string): void {
+  // console.log(a.length) // 报错
+  console.log((<string>a).length) // OK
+}
 
