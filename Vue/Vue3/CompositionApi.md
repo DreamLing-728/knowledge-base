@@ -24,7 +24,7 @@ const person = reactive({
 })
 ```
 举个例子,在setup函数里，普通对象是不会响应式变化的
-```vue
+```js
 <template>
     <p>age: {{ person.age }}, name: {{ person.name }}</p>
 </template>
@@ -86,7 +86,7 @@ export default {
 
 #### (3) toRef
 在一个响应式对象里面，如果其中有一个属性要拿出来单独做响应式的话，就用 toRef。
-```vue
+```js
 <template>
     <p>toRef demo - {{ageRef}} - {{state.name}} {{state.age}}</p>
 </template>
@@ -131,7 +131,7 @@ export default {
 #### （4）toRefs
 与 toRef 不一样的是， toRefs 是针对整个对象的所有属性，目标在于将响应式对象（ reactive 封装）转换为普通对象，且保持响应性。
 当我们把一个对象解构时，解构出来的对象会丢失响应性。
-```vue
+```js
 <template>
     <p>age:{{age}}, name:{{name}}</p>
 </template>
@@ -159,7 +159,7 @@ export default {
 </script>
 ```
 所以当需要解构响应对象，且希望解构后的对象也保持响应性是，可以使用toRefs。
-```vue
+```js
 <template>
     <p>age:{{age}}, name:{{name}}</p>
 </template>
