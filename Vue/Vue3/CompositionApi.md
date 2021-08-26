@@ -146,7 +146,7 @@ export default {
 
 ```
 
-#### (3) toRef
+#### （3）toRef
 在一个响应式对象里面，如果其中有一个属性要拿出来单独做响应式的话，就用 toRef。
 ```js
 <template>
@@ -299,3 +299,79 @@ export default {
 
 #### （5）watch
 
+三个参数：
+
+1. 一个想要侦听的响应式引用或 getter 函数
+
+2. 一个回调
+
+3. 可选的配置选项
+
+```js
+<template>
+    <p>count: {{ count }}</p>
+    <p>countWatch: {{ countWatch }}</p>
+</template>
+
+<script>
+import { ref, watch } from 'vue'
+export default {
+  name: 'ref',
+  setup () {
+    const count = ref(0)
+    const countWatch = ref(0)
+    watch(
+      // getter 函数
+      () => ++count.value,
+      (newValue) => {
+        console.log('newValue', newValue)
+        countWatch.value = newValue
+      },
+      {
+        immediate: true
+      }
+    )
+    return {
+      count,
+      countWatch
+    }
+  }
+}
+// 结果：
+// count: 1  countWatch: 1
+</script>
+```
+
+```js
+<template>
+    <p>count: {{ count }}</p>
+    <p>countWatch: {{ countWatch }}</p>
+</template>
+
+<script>
+import { ref, watch } from 'vue'
+export default {
+  name: 'ref',
+  setup () {
+    const count = ref(0)
+    const countWatch = ref(0)
+    watch(
+      // 一个想要侦听的响应式引用
+      count,
+      (newValue) => {
+        countWatch.value = ++newValue
+      },
+      {
+        immediate: true
+      }
+    )
+    return {
+      count,
+      countWatch
+    }
+  }
+}
+// 结果：
+// count: 0  countWatch: 1
+</script>
+```
