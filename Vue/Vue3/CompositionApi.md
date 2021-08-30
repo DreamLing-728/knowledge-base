@@ -538,9 +538,89 @@ export default {
 ```
 
 #### （9）provider和inject
+provide和inject可以实现嵌套组件之间进行传递数据。
+这两个函数都是在setup函数中使用的。
+父级组件使用provide向下进行传递数据。
+子级组件使用inject来获取上级组件传递过来的数据。
+
+举个例子
+```js
+// 父组件
+<template>
+  <Son/>
+</template>
+
+<script>
+import { provide, reactive } from 'vue'
+import Son from './composables/provide-inject/Son.vue'
+
+export default {
+  name: 'provide/inject',
+  components: { Son },
+  setup () {
+    const leyoData = reactive({
+      name: 'leyo',
+      age: 18
+    })
+    setTimeout(() => {
+      leyoData.age = 20
+    }, 1500)
+    provide('leyoData', leyoData)
+  }
+}
+</script>
+
+```
+
+```js
+// 子组件
+<template>
+    <p>儿子: {{ leyoData }}</p>
+    <GrandSon/>
+</template>
+
+<script>
+import { inject } from 'vue'
+import GrandSon from './GrandSon.vue'
+export default {
+  name: 'provide/inject',
+  components: { GrandSon },
+  setup () {
+    const leyoData = inject('leyoData')
+    return {
+      leyoData
+    }
+  }
+}
+</script>
+
+```
+
+```js
+// 孙子组件
+<template>
+    <p>孙子: {{ leyoData }}</p>
+</template>
+
+<script>
+import { inject } from 'vue'
+export default {
+  name: 'provide/inject',
+  setup () {
+    const leyoData = inject('leyoData')
+    return {
+      leyoData
+    }
+  }
+}
+</script>
+
+```
+结果：
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fbe3f166a2a34287babf36b78ee8381e~tplv-k3u1fbpfcp-watermark.image)
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1dc3f4df124049a6b09c998694711ffb~tplv-k3u1fbpfcp-watermark.image)
 
 
-
-所有声明好的变量和方法，如果想在 template 模板里使用的话，必须在 setup 方法里 return，否则无法调用。
 
 demo链接：http://remote.ysbang.cn:9099/chengmengling/composition-api-demo
