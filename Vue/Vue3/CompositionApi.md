@@ -375,3 +375,172 @@ export default {
 // count: 0  countWatch: 1
 </script>
 ```
+```
+特点：
+1. 具有一定的惰性lazy,第一次页面展示的时候不会执行，只有数据变化的时候才会执行
+2. 参数可以拿到当前值和原始值
+3. 可以侦听多个数据的变化，用一个侦听起承载
+```
+
+#### （6）watchEffect
+```
+1. 立即执行，没有惰性，页面的首次加载就会执行
+2. 不需要传递要侦听的内容 会自动感知代码依赖，不需要传递很多参数，只要传递一个回调函数
+3. 不能获取之前数据的值 只能获取当前值
+```
+
+```js
+<template>
+    <p>count: {{ count }}</p>
+    <p>countWatch: {{ countWatch }}</p>
+</template>
+
+<script>
+import { ref, watchEffect } from 'vue'
+export default {
+  name: 'ref',
+  setup () {
+    const count = ref(0)
+    const countWatch = ref(0)
+    watchEffect(
+      () => {
+        countWatch.value = ++count.value
+      }
+    )
+    return {
+      count,
+      countWatch
+    }
+  }
+}
+// 结果：
+// count: 1  countWatch: 1
+</script>
+```
+
+#### （7）computed
+返回一个不可变的响应式 ref 对象。
+```js
+<template>
+    <p>count: {{ count }}</p>
+    <p>countWatch: {{ countWatch }}</p>
+</template>
+
+<script>
+import { computed, ref } from 'vue'
+export default {
+  name: 'computed',
+  setup () {
+    const count = ref(0)
+    const countWatch = computed(
+      () => count.value + 1
+    )
+    return {
+      count,
+      countWatch
+    }
+  }
+}
+// 结果：
+// count: 1  countWatch: 1
+</script>
+```
+
+如果希望对象是可写的，则需要用 get 和 set 函数创建
+```js
+<template>
+    <p>count: {{ count }}</p>
+    <p>countWatch: {{ countWatch }}</p>
+</template>
+
+<script>
+import { computed, ref } from 'vue'
+export default {
+  name: 'computed',
+  setup () {
+    const count = ref(0)
+    const countWatch = computed({
+      get: () => count.value + 1,
+      set: (val) => {
+        count.value = val - 1
+      }
+    })
+    setTimeout(() => {
+      countWatch.value = 20
+    }, 2000)
+    return {
+      count,
+      countWatch
+    }
+  }
+}
+// 结果：
+// count: 0  countWatch: 1
+// count: 19  countWatch: 20
+</script>
+```
+
+#### （8）readonly
+接受一个对象 (响应式或纯对象) 或 ref 并返回原始对象的只读代理。只读代理是深层的：任何被访问的嵌套 property 也是只读的。
+```js
+<template>
+    <p>count: {{ count }}</p>
+    <p>countReadonly: {{ countReadonly }}</p>
+</template>
+
+<script>
+import { readonly, ref } from 'vue'
+export default {
+  name: 'readonly',
+  setup () {
+    const count = ref(0)
+    const countReadonly = readonly(count)
+    setTimeout(() => {
+      count.value = 20
+    }, 2000)
+    return {
+      count,
+      countReadonly
+    }
+  }
+}
+// 结果：
+// count: 0  countWatch: 0
+// count: 20  countWatch: 20
+</script>
+```
+
+```js
+<template>
+    <p>count: {{ count }}</p>
+    <p>countReadonly: {{ countReadonly }}</p>
+</template>
+
+<script>
+import { readonly, ref } from 'vue'
+export default {
+  name: 'readonly',
+  setup () {
+    const count = ref(0)
+    const countReadonly = readonly(count)
+    setTimeout(() => {
+      countReadonly.value = 30 // 报错Set operation on key "value" failed: target is readonly
+    }, 2000)
+    return {
+      count,
+      countReadonly
+    }
+  }
+}
+// 结果：
+// count: 0  countWatch: 0
+</script>
+```
+
+#### （9）provider和inject
+
+
+
+所有声明好的变量和方法，如果想在 template 模板里使用的话，必须在 setup 方法里 return，否则无法调用。
+
+demo链接：http://remote.ysbang.cn:9099/chengmengling/composition-api-demo
