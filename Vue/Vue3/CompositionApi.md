@@ -1,11 +1,114 @@
-### 1.setup函数
-setup函数接收两个参数：```props、context```
+## 1.setup函数
+### 1.1 生命周期
+1. 在 beforeCreate 和 created这两个钩子函数之前，是最早执行的，在程序运行中，setup函数只执行一次，创建的是data和method
+2. 在 setup中没有this
+3. 修改的：
+```
+  2.1 beforeDestory/ destoryed 改名 beforeUnmount / unmounted
+  2.2 setup替代了beforeCreate/ created
+  2.3 beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated 写在setup()里，并且加前缀on
+```
+
+4. 注意：beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated继续使用也不会报错，但是不能继续使用beforeDestory/ destoryed
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/af4fd2078a1d48cda9ec04487506c9d9~tplv-k3u1fbpfcp-watermark.image)
+### 1.2 setup函数接收两个参数：```props、context```
 #### （1）props
-props是响应式的，
+props是响应式的，当传入新的 prop 时，它将被更新。
 
-#### （1）context
+父组件
+```vue
+<template>
+    <el-input v-model="name"/>
+    <Son :name="name"/>
+</template>
 
-### 2. 函数
+<script>
+import { ref } from 'vue'
+import Son from './son.vue'
+
+export default {
+  name: 'props',
+  components: { Son },
+  setup () {
+    const name = ref('leyo')
+    return {
+      name
+    }
+  }
+}
+
+</script>
+```
+
+子组件
+```vue
+
+<template>
+    <p>name: {{name}}</p>
+
+</template>
+
+<script>
+import { toRefs } from 'vue'
+
+export default {
+  name: 'ToRefSon',
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
+  setup (props) {
+    // const { name } = props // 报错： will cause the value to lose reactivity
+    const { name } = toRefs(props)
+    console.log('name', name)
+  }
+}
+
+</script>
+
+```
+因为 props 是响应式的，你不能使用 ES6 解构，它会消除 prop 的响应性。如果需要解构 prop，可以在 setup 函数中使用 toRefs 函数。
+
+结果
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4771e5e478654b9492cfed4a0da82d5a~tplv-k3u1fbpfcp-watermark.image)
+
+
+#### （2）context
+传递给 setup 函数的第二个参数是 context。context 是一个普通的 JavaScript 对象，有三个property
+```js
+export default {
+  setup(props, context) {
+    // Attribute (非响应式对象)
+    console.log(context.attrs)
+
+    // 插槽 (非响应式对象)
+    console.log(context.slots)
+
+    // 触发事件 (方法)
+    console.log(context.emit)
+  }
+}
+```
+context是普通对象，不是响应式的，可以在传参的时候直接解构。
+```js
+export default {
+  setup(props, { attrs, slots, emit }) {
+    ...
+  }
+}
+```
+ 1. attrs :在此部分，接收在父组件传递过来的，并且没有在props中声明的参数。
+
+ 2. emit：子组件对父组件发送事件，在vue2中，子对父发送事件采用this.$emit对父组件发送事件，在vue3中子组件对父组件发送事件采用context.emit发送事件。
+
+ 3. slots：和vue2中的插槽使用类似
+
+
+## 2. setup里的函数
 #### （1）ref
 ref 可以生成 值类型（即基本数据类型） 的响应式数据。
 ```js
@@ -66,15 +169,13 @@ export default {
   }
 }
 // 结果：
-// age: 0
-// age：1
+// count: 0  deep.count: 0
+// count: 1  deep.count: 1
 </script>
 ```
 
 ```Ref解包```
 上面例子的count，ref在setup函数里被访问时，需要加.value，但是在setup()中返回后，它将自动浅层次解包内部值，在模板里使用时可以直接访问。但如果是深层次的，还是需要加.value。
-
-
 
 
 #### （2）reactive
@@ -202,27 +303,52 @@ export default {
 
 官方文档：如果 title 是可选的 prop，则传入的 props 中可能没有 title 。在这种情况下，toRefs 将不会为 title 创建一个 ref 。你需要使用 toRef 替代它：
 
-举个例子，也没能理解
-```js
+举个例子，这里不是很理解
+```vue
+// 父组件
 <template>
-    <p>name: {{age}}, age: {{name}}</p>
+    <Son :name="name"/>
+</template>
+
+<script>
+import { ref } from 'vue'
+import Son from './props-son.vue'
+
+export default {
+  name: 'ToRefFather',
+  components: { Son },
+  setup () {
+    const name = ref('leyo')
+    const age = ref(18)
+    return {
+      name,
+      age
+    }
+  }
+}
+</script>
+```
+
+```vue
+// 子组件
+<template>
+    <p>name: {{name}}, age: {{age}}</p>
 
 </template>
 
 <script>
-import { toRefs, reactive } from 'vue'
+import { toRef, toRefs, reactive } from 'vue'
 
 export default {
-  name: 'ToRef',
+  name: 'ToRefSon',
   props: {
-    age: {
-      type: Number,
-      default: 18,
-      required: true
-    },
     name: {
       type: String,
-      default: 'leyo'
+      default: ''
+    },
+    age: {
+      type: Number,
+      default: 0
     }
   },
   setup (props) {
@@ -233,11 +359,11 @@ export default {
     }
   }
 }
-// 结果
-// name: 18, age: leyo
+
 </script>
 
-
+// 结果
+// name: leyo, age: 0
 ```
 #### （4）toRefs
 与 toRef 不一样的是， toRefs 是针对整个对象的所有属性，目标在于将响应式对象（ reactive 封装）转换为普通对象，且保持响应性。
@@ -268,6 +394,8 @@ export default {
     }
   }
 }
+// 结果
+// age:20, name:leyo
 </script>
 ```
 所以当需要解构响应对象，且希望解构后的对象也保持响应性是，可以使用toRefs。
@@ -329,7 +457,7 @@ export default {
     const countWatch = ref(0)
     watch(
       // getter 函数
-      () => ++count.value,
+      () => count.value + 1,
       (newValue) => {
         console.log('newValue', newValue)
         countWatch.value = newValue
@@ -338,40 +466,17 @@ export default {
         immediate: true
       }
     )
-    return {
-      count,
-      countWatch
-    }
-  }
-}
-// 结果：
-// count: 1  countWatch: 1
-</script>
-```
 
-```js
-<template>
-    <p>count: {{ count }}</p>
-    <p>countWatch: {{ countWatch }}</p>
-</template>
-
-<script>
-import { ref, watch } from 'vue'
-export default {
-  name: 'ref',
-  setup () {
-    const count = ref(0)
-    const countWatch = ref(0)
-    watch(
-      // 一个想要侦听的响应式引用
-      count,
-      (newValue) => {
-        countWatch.value = ++newValue
-      },
-      {
-        immediate: true
-      }
-    )
+    // watch(
+    //   // 一个想要侦听的响应式引用
+    //   count,
+    //   (newValue) => {
+    //     countWatch.value = ++newValue
+    //   },
+    //   {
+    //     immediate: true
+    //   }
+    // )
     return {
       count,
       countWatch
@@ -382,6 +487,7 @@ export default {
 // count: 0  countWatch: 1
 </script>
 ```
+
 ```
 特点：
 1. 具有一定的惰性lazy,第一次页面展示的时候不会执行，只有数据变化的时候才会执行
@@ -442,6 +548,9 @@ export default {
     const countWatch = computed(
       () => count.value + 1
     )
+    setTimeout(() => {
+      countWatch.value = 20 // 报错：computed value is readonly
+    })
     return {
       count,
       countWatch
@@ -449,7 +558,7 @@ export default {
   }
 }
 // 结果：
-// count: 1  countWatch: 1
+// count: 0  countWatch: 1
 </script>
 ```
 
@@ -505,6 +614,9 @@ export default {
     setTimeout(() => {
       count.value = 20
     }, 2000)
+    // setTimeout(() => {
+    //   countReadonly.value = 30 // 报错Set operation on key "value" failed: target is readonly
+    // }, 2000)
     return {
       count,
       countReadonly
@@ -514,33 +626,6 @@ export default {
 // 结果：
 // count: 0  countWatch: 0
 // count: 20  countWatch: 20
-</script>
-```
-
-```js
-<template>
-    <p>count: {{ count }}</p>
-    <p>countReadonly: {{ countReadonly }}</p>
-</template>
-
-<script>
-import { readonly, ref } from 'vue'
-export default {
-  name: 'readonly',
-  setup () {
-    const count = ref(0)
-    const countReadonly = readonly(count)
-    setTimeout(() => {
-      countReadonly.value = 30 // 报错Set operation on key "value" failed: target is readonly
-    }, 2000)
-    return {
-      count,
-      countReadonly
-    }
-  }
-}
-// 结果：
-// count: 0  countWatch: 0
 </script>
 ```
 
@@ -559,7 +644,7 @@ provide和inject可以实现嵌套组件之间进行传递数据。
 
 <script>
 import { provide, reactive } from 'vue'
-import Son from './composables/provide-inject/Son.vue'
+import Son from './Son.vue'
 
 export default {
   name: 'provide/inject',
