@@ -1,23 +1,33 @@
+### compositionApi和optionApi区别
+optionApi
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9690a034f10343cd92225af454eb44fb~tplv-k3u1fbpfcp-watermark.image)
+
+compositionApi
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5b4f7af4102942d5af33ffb522029b11~tplv-k3u1fbpfcp-watermark.image)
+
 ## 1.setup函数
 ### 1.1 生命周期
-1. 在 beforeCreate 和 created这两个钩子函数之前，是最早执行的，在程序运行中，setup函数只执行一次，创建的是data和method
+1. 执行顺序在 beforeCreate 和 created这两个钩子函数之前，是最早执行的，在程序运行中，setup函数只执行一次，创建的是data和method
 2. 在 setup中没有this
 3. 修改的：
-```
-  2.1 beforeDestory/ destoryed 改名 beforeUnmount / unmounted
-  2.2 setup替代了beforeCreate/ created
-  2.3 beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated 写在setup()里，并且加前缀on
+```typescript
+  3.1 beforeDestory/ destoryed 改名 beforeUnmount / unmounted
+  3.2 setup替代了beforeCreate/ created
+  3.3 beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated 写在setup()里，并且加前缀on
 ```
 
 4. 注意：beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated继续使用也不会报错，但是不能继续使用beforeDestory/ destoryed
 
 ![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/af4fd2078a1d48cda9ec04487506c9d9~tplv-k3u1fbpfcp-watermark.image)
+
 ### 1.2 setup函数接收两个参数：```props、context```
 #### （1）props
-props是响应式的，当传入新的 prop 时，它将被更新。
+props是响应式的，当传入新的 prop 时，它将被更新。因为 props 是响应式的，不能使用 ES6 解构，它会消除 prop 的响应性。如果需要解构 prop，可以在 setup 函数中使用 toRefs 函数。
 
 父组件
-```vue
+```typescript
 <template>
     <el-input v-model="name"/>
     <Son :name="name"/>
@@ -42,15 +52,14 @@ export default {
 ```
 
 子组件
-```vue
-
+```typescript
 <template>
-    <p>name: {{name}}</p>
+    <p>name: {{nameRef}}</p>
 
 </template>
 
 <script>
-import { toRefs } from 'vue'
+import { ref, toRefs, watch } from 'vue'
 
 export default {
   name: 'ToRefSon',
@@ -61,25 +70,35 @@ export default {
     }
   },
   setup (props) {
-    // const { name } = props // 报错： will cause the value to lose reactivity
+    // const { name } = props.name // 报错： will cause the value to lose reactivity
     const { name } = toRefs(props)
-    console.log('name', name)
+    const nameRef = ref('')
+    watch(
+      name,
+      (name) => {
+        nameRef.value = name + 'new'
+      },
+      {
+        immediate: true
+      }
+    )
+    return {
+      nameRef
+    }
   }
 }
 
 </script>
-
 ```
-因为 props 是响应式的，你不能使用 ES6 解构，它会消除 prop 的响应性。如果需要解构 prop，可以在 setup 函数中使用 toRefs 函数。
 
 结果
 
-![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4771e5e478654b9492cfed4a0da82d5a~tplv-k3u1fbpfcp-watermark.image)
+![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/66a55c71ab4c4915805e38e67e07a7ee~tplv-k3u1fbpfcp-watermark.image)
 
 
 #### （2）context
 传递给 setup 函数的第二个参数是 context。context 是一个普通的 JavaScript 对象，有三个property
-```js
+```typescript
 export default {
   setup(props, context) {
     // Attribute (非响应式对象)
@@ -94,24 +113,93 @@ export default {
 }
 ```
 context是普通对象，不是响应式的，可以在传参的时候直接解构。
-```js
+```typescript
 export default {
   setup(props, { attrs, slots, emit }) {
     ...
   }
 }
 ```
- 1. attrs :在此部分，接收在父组件传递过来的，并且没有在props中声明的参数。
+ 1. attrs: 接收在父组件传递过来的，并且没有在props中声明的参数。
 
  2. emit：子组件对父组件发送事件，在vue2中，子对父发送事件采用this.$emit对父组件发送事件，在vue3中子组件对父组件发送事件采用context.emit发送事件。
 
  3. slots：和vue2中的插槽使用类似
 
+ 举个例子：
+ ```typescript
+// 父组件
+<template>
+    <el-input v-model="name"/>
+    <Son :name="name" :age="age" @pMsg="getMsg"/>
+</template>
+
+<script>
+import { ref } from 'vue'
+import Son from './son.vue'
+
+export default {
+  name: 'props',
+  components: { Son },
+  setup () {
+    const name = ref('leyo')
+    const age = ref(18)
+    const getMsg = (value) => {
+      console.log('接收子组件信息', value)
+    }
+    return {
+      name,
+      age,
+      getMsg
+    }
+  }
+}
+
+</script>
+ ```
+
+ ```typescript
+// 子组件
+<template>
+    <p>name: {{name}}, age: {{age}}</p>
+    <el-button @click="postMsg">子组件发送事件</el-button>
+</template>
+
+<script>
+import { ref, toRefs } from 'vue'
+
+export default {
+  name: 'ToRefSon',
+  emits: ['pMsg'], // 处理控制台报错
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
+  setup (props, { attrs, emit, slot }) {
+    const { name } = toRefs(props)
+    const age = ref(attrs.age)
+    console.log('name, age', name, age)
+    console.log('attrs,emit,slot', attrs, emit, slot)
+    const postMsg = () => {
+      emit('pMsg', '发送事件')
+    }
+    return {
+      age,
+      postMsg
+    }
+  }
+}
+
+</script>
+ ```
+
 
 ## 2. setup里的函数
 #### （1）ref
 ref 可以生成 值类型（即基本数据类型） 的响应式数据。
-```js
+```typescript
 // 普通基本数据类型
 const count = 0
 
@@ -121,7 +209,7 @@ console.log(count) // {value: 0}
 ```
 
 举个例子,在setup函数里，普通基本数据类型是不会响应式变化的
-```js
+```typescript
 <template>
     <p>age: {{ count }}</p>
 </template>
@@ -145,7 +233,7 @@ export default {
 </script>
 ```
 如果用ref函数封装成响应式对象，则会动态变化
-```js
+```typescript
 <template>
     <p>count: {{ count }}</p>
     <p>deep.count: {{ deep.count.value }}</p>
@@ -180,7 +268,7 @@ export default {
 
 #### （2）reactive
 对于一个普通对象来说，如果这个普通对象要实现响应式，就用 reactive。
-```js
+```typescript
 // 普通对象
 const person = {
 	age: 20,
@@ -193,7 +281,7 @@ const person = reactive({
 })
 ```
 举个例子,在setup函数里，普通对象是不会响应式变化的
-```js
+```typescript
 <template>
     <p>age: {{ person.age }}, name: {{ person.name }}</p>
 </template>
@@ -222,7 +310,7 @@ export default {
 ```
 
 如果用reactive函数封装成响应式对象，则会动态变化
-```js
+```typescript
 <template>
     <p>age: {{ person.age }}, name: {{ person.name }}</p>
 </template>
@@ -256,9 +344,9 @@ export default {
 
 #### （3）toRef
 在一个响应式对象里面，如果其中有一个属性要拿出来单独做响应式的话，就用 toRef。
-```js
+```typescript
 <template>
-    <p>toRef demo - {{ageRef}} - {{state.name}} {{state.age}}</p>
+    <p>state.name:{{state.name}} state.age:{{state.age}} age:{{ageRef}}</p>
 </template>
 
 <script>
@@ -304,7 +392,7 @@ export default {
 官方文档：如果 title 是可选的 prop，则传入的 props 中可能没有 title 。在这种情况下，toRefs 将不会为 title 创建一个 ref 。你需要使用 toRef 替代它：
 
 举个例子，这里不是很理解
-```vue
+```typescript
 // 父组件
 <template>
     <Son :name="name"/>
@@ -329,7 +417,7 @@ export default {
 </script>
 ```
 
-```vue
+```typescript
 // 子组件
 <template>
     <p>name: {{name}}, age: {{age}}</p>
@@ -369,7 +457,7 @@ export default {
 与 toRef 不一样的是， toRefs 是针对整个对象的所有属性，目标在于将响应式对象（ reactive 封装）转换为普通对象，且保持响应性。
 
 当我们把一个对象解构时，解构出来的对象会丢失响应性。
-```js
+```typescript
 <template>
     <p>age:{{age}}, name:{{name}}</p>
 </template>
@@ -399,7 +487,7 @@ export default {
 </script>
 ```
 所以当需要解构响应对象，且希望解构后的对象也保持响应性是，可以使用toRefs。
-```js
+```typescript
 <template>
     <p>age:{{age}}, name:{{name}}</p>
 </template>
@@ -442,7 +530,7 @@ export default {
 
 3. 可选的配置选项
 
-```js
+```typescript
 <template>
     <p>count: {{ count }}</p>
     <p>countWatch: {{ countWatch }}</p>
@@ -502,7 +590,7 @@ export default {
 3. 不能获取之前数据的值 只能获取当前值
 ```
 
-```js
+```typescript
 <template>
     <p>count: {{ count }}</p>
     <p>countWatch: {{ countWatch }}</p>
@@ -533,7 +621,7 @@ export default {
 
 #### （7）computed
 返回一个不可变的响应式 ref 对象。
-```js
+```typescript
 <template>
     <p>count: {{ count }}</p>
     <p>countWatch: {{ countWatch }}</p>
@@ -563,7 +651,7 @@ export default {
 ```
 
 如果希望对象是可写的，则需要用 get 和 set 函数创建
-```js
+```typescript
 <template>
     <p>count: {{ count }}</p>
     <p>countWatch: {{ countWatch }}</p>
@@ -598,7 +686,7 @@ export default {
 
 #### （8）readonly
 接受一个对象 (响应式或纯对象) 或 ref 并返回原始对象的只读代理。只读代理是深层的：任何被访问的嵌套 property 也是只读的。
-```js
+```typescript
 <template>
     <p>count: {{ count }}</p>
     <p>countReadonly: {{ countReadonly }}</p>
@@ -636,7 +724,7 @@ provide和inject可以实现嵌套组件之间进行传递数据。
 子级组件使用inject来获取上级组件传递过来的数据。
 
 举个例子
-```js
+```typescript
 // 父组件
 <template>
   <Son/>
@@ -664,7 +752,7 @@ export default {
 
 ```
 
-```js
+```typescript
 // 子组件
 <template>
     <p>儿子: {{ leyoData }}</p>
@@ -688,7 +776,7 @@ export default {
 
 ```
 
-```js
+```typescript
 // 孙子组件
 <template>
     <p>孙子: {{ leyoData }}</p>
