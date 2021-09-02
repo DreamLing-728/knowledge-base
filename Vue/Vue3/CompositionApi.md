@@ -1,28 +1,26 @@
 ### compositionApi和optionApi区别
-optionApi
+Vue2: optionApi
 
 ![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9690a034f10343cd92225af454eb44fb~tplv-k3u1fbpfcp-watermark.image)
 
-compositionApi
+Vue3: compositionApi
 
 ![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5b4f7af4102942d5af33ffb522029b11~tplv-k3u1fbpfcp-watermark.image)
 
 ## 1.setup函数
 ### 1.1 生命周期
-1. 执行顺序在 beforeCreate 和 created这两个钩子函数之前，是最早执行的，在程序运行中，setup函数只执行一次，创建的是data和method
-2. 在 setup中没有this
-3. 修改的：
-```typescript
-  3.1 beforeDestory/ destoryed 改名 beforeUnmount / unmounted
-  3.2 setup替代了beforeCreate/ created
-  3.3 beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated 写在setup()里，并且加前缀on
-```
++ 1. 执行顺序在 beforeCreate 和 created这两个钩子函数之前，是最早执行的，在程序运行中，setup函数只执行一次，创建的是data和method
++ 2. 在 setup中没有this
++ 3. ```变化的：```
+  + beforeDestory/ destoryed 改名 beforeUnmount / unmounted
+  + setup替代了beforeCreate/ created
+  + beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated 写在setup()里，并且加前缀on
 
-4. 注意：beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated继续使用也不会报错，但是不能继续使用beforeDestory/ destoryed
++ 4. ```注意：```beforeCreate/ created/ beforeMount/ mounted / beforeUpdate / updated继续使用也不会报错，但是不能继续使用beforeDestory/ destoryed
 
 ![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/af4fd2078a1d48cda9ec04487506c9d9~tplv-k3u1fbpfcp-watermark.image)
 
-### 1.2 setup函数接收两个参数：```props、context```
+### 1.2 setup的参数：```props、context```
 #### （1）props
 props是响应式的，当传入新的 prop 时，它将被更新。因为 props 是响应式的，不能使用 ES6 解构，它会消除 prop 的响应性。如果需要解构 prop，可以在 setup 函数中使用 toRefs 函数。
 
@@ -391,7 +389,7 @@ export default {
 
 官方文档：如果 title 是可选的 prop，则传入的 props 中可能没有 title 。在这种情况下，toRefs 将不会为 title 创建一个 ref 。你需要使用 toRef 替代它：
 
-举个例子，这里不是很理解
+举个例子，但不是很理解
 ```typescript
 // 父组件
 <template>
@@ -425,7 +423,7 @@ export default {
 </template>
 
 <script>
-import { toRef, toRefs, reactive } from 'vue'
+import { toRefs } from 'vue'
 
 export default {
   name: 'ToRefSon',
@@ -440,16 +438,13 @@ export default {
     }
   },
   setup (props) {
-    const propsReactive = reactive(props)
-    const propsRef = toRefs(propsReactive)
+    const propsRef = toRefs(props)
     return {
       ...propsRef
     }
   }
 }
-
 </script>
-
 // 结果
 // name: leyo, age: 0
 ```
@@ -580,7 +575,6 @@ export default {
 特点：
 1. 具有一定的惰性lazy,第一次页面展示的时候不会执行，只有数据变化的时候才会执行
 2. 参数可以拿到当前值和原始值
-3. 可以侦听多个数据的变化，用一个侦听起承载
 ```
 
 #### （6）watchEffect
@@ -804,3 +798,14 @@ export default {
 
 
 demo链接：http://remote.ysbang.cn:9099/chengmengling/composition-api-demo
+
+参考文档：l
+
+[官方文档](https://v3.cn.vuejs.org/guide/introduction.html)
+
+[做了一夜动画，就为让大家更好的理解Vue3的Composition Api](https://juejin.cn/post/6890545920883032071)
+
+[敲黑板！vue3重点！一文了解Composition API新特性：ref、toRef、toRefs](https://juejin.cn/post/6976679225239535629)
+
+
+
