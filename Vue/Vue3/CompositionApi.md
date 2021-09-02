@@ -337,118 +337,8 @@ export default {
 // age: 20, name: leyo
 // age: 25, name: leyo
 </script>
-
 ```
-
-#### （3）toRef
-在一个响应式对象里面，如果其中有一个属性要拿出来单独做响应式的话，就用 toRef。
-```typescript
-<template>
-    <p>state.name:{{state.name}} state.age:{{state.age}} age:{{ageRef}}</p>
-</template>
-
-<script>
-import { toRef, reactive } from 'vue'
-
-export default {
-  name: 'ToRef',
-  setup () {
-    const state = reactive({
-      age: 18,
-      name: 'monday'
-    })
-
-    // // toRef 如果用于普通对象（非响应式对象），产出的结果不具备响应式
-    // const state = {
-    //     age: 18,
-    //     name: 'monday'
-    // }
-
-    // 实现某一个属性的数据响应式
-    const ageRef = toRef(state, 'age')
-
-    setTimeout(() => {
-      state.age = 20
-    }, 1500)
-
-    setTimeout(() => {
-      ageRef.value = 25 // .value 修改值
-    }, 3000)
-
-    return {
-      state,
-      ageRef
-    }
-  }
-}
-</script>
-```
-结果：
-
-![20210826_111317.gif](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8ac807e5db9a4fa3b265ca22abeb02cd~tplv-k3u1fbpfcp-watermark.image)
-
-官方文档：如果 title 是可选的 prop，则传入的 props 中可能没有 title 。在这种情况下，toRefs 将不会为 title 创建一个 ref 。你需要使用 toRef 替代它：
-
-举个例子，但不是很理解
-```typescript
-// 父组件
-<template>
-    <Son :name="name"/>
-</template>
-
-<script>
-import { ref } from 'vue'
-import Son from './props-son.vue'
-
-export default {
-  name: 'ToRefFather',
-  components: { Son },
-  setup () {
-    const name = ref('leyo')
-    const age = ref(18)
-    return {
-      name,
-      age
-    }
-  }
-}
-</script>
-```
-
-```typescript
-// 子组件
-<template>
-    <p>name: {{name}}, age: {{age}}</p>
-
-</template>
-
-<script>
-import { toRefs } from 'vue'
-
-export default {
-  name: 'ToRefSon',
-  props: {
-    name: {
-      type: String,
-      default: ''
-    },
-    age: {
-      type: Number,
-      default: 0
-    }
-  },
-  setup (props) {
-    const propsRef = toRefs(props)
-    return {
-      ...propsRef
-    }
-  }
-}
-</script>
-// 结果
-// name: leyo, age: 0
-```
-#### （4）toRefs
+#### （3）toRefs
 与 toRef 不一样的是， toRefs 是针对整个对象的所有属性，目标在于将响应式对象（ reactive 封装）转换为普通对象，且保持响应性。
 
 当我们把一个对象解构时，解构出来的对象会丢失响应性。
@@ -513,6 +403,122 @@ export default {
 // age:20, name:leyo
 // age:25, name:leyo
 </script>
+```
+
+#### （4）toRef
+在一个响应式对象里面，如果其中有一个属性要拿出来单独做响应式的话，就用 toRef。
+
+注意：
+```1. 用于响应式对象，产出的结果具备响应式，且修改响应式数据是会影响到原始数据。```
+```2. 如果用于普通对象（非响应式对象），产出的结果不具备响应式。```
+```3. 和ref的区别：ref本质是拷贝，修改响应式数据不会影响原始数据；toRef的本质是引用关系，修改响应式数据会影响原始数据。```
+
+```typescript
+<template>
+    <p>state.name:{{state.name}} state.age:{{state.age}} age:{{ageRef}}</p>
+</template>
+
+<script>
+import { toRef, reactive } from 'vue'
+
+export default {
+  name: 'ToRef',
+  setup () {
+    const state = reactive({
+      age: 18,
+      name: 'monday'
+    })
+
+    // // toRef 如果用于普通对象（非响应式对象），产出的结果不具备响应式
+    // const state = {
+    //     age: 18,
+    //     name: 'monday'
+    // }
+
+    // 实现某一个属性的数据响应式
+    // const ageRef = ref(state.age) // 拷贝
+    const ageRef = toRef(state, 'age')  // 引用
+
+    setTimeout(() => {
+      state.age = 20
+    }, 1500)
+
+    setTimeout(() => {
+      ageRef.value = 25 // .value 修改值
+    }, 3000)
+
+    return {
+      state,
+      ageRef
+    }
+  }
+}
+</script>
+```
+结果：
+
+![20210826_111317.gif](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8ac807e5db9a4fa3b265ca22abeb02cd~tplv-k3u1fbpfcp-watermark.image)
+
+另一种使用场景（官方文档）：如果 title 是可选的 prop，则传入的 props 中可能没有 title 。在这种情况下，toRefs 将不会为 title 创建一个 ref 。你需要使用 toRef 替代它：
+
+举个例子，但不是很理解
+```typescript
+// 父组件
+<template>
+    <Son :name="name"/>
+</template>
+
+<script>
+import { ref } from 'vue'
+import Son from './props-son.vue'
+
+export default {
+  name: 'ToRefFather',
+  components: { Son },
+  setup () {
+    const name = ref('leyo')
+    const age = ref(18)
+    return {
+      name,
+      age
+    }
+  }
+}
+</script>
+```
+
+```typescript
+// 子组件
+<template>
+    <p>name: {{name}}, age: {{age}}</p>
+
+</template>
+
+<script>
+import { toRefs } from 'vue'
+
+export default {
+  name: 'ToRefSon',
+  props: {
+    name: {
+      type: String,
+      default: ''
+    },
+    age: {
+      type: Number,
+      default: 0
+    }
+  },
+  setup (props) {
+    const propsRef = toRefs(props)
+    return {
+      ...propsRef
+    }
+  }
+}
+</script>
+// 结果
+// name: leyo, age: 0
 ```
 
 #### （5）watch
@@ -799,13 +805,15 @@ export default {
 
 demo链接：http://remote.ysbang.cn:9099/chengmengling/composition-api-demo
 
-参考文档：l
+参考文档：
 
 [官方文档](https://v3.cn.vuejs.org/guide/introduction.html)
 
 [做了一夜动画，就为让大家更好的理解Vue3的Composition Api](https://juejin.cn/post/6890545920883032071)
 
 [敲黑板！vue3重点！一文了解Composition API新特性：ref、toRef、toRefs](https://juejin.cn/post/6976679225239535629)
+
+[vue3 toRef函数和toRefs函数](https://www.jianshu.com/p/0c6ad50a9055)
 
 
 
